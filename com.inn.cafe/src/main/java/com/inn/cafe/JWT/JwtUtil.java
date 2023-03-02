@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-    private String secret = "!@FirstSecretKey!@";
+    private String secret = "MySecretKey";
 
     public String extractUserName(String token){
         return extractClaims(token, Claims::getSubject);
@@ -39,12 +39,14 @@ public class JwtUtil {
     }
 
     private String createToken(Map<String, Object> claims, String subject){
-        return Jwts.builder()
+        var jwtToken = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .signWith(SignatureAlgorithm.HS256,secret).compact();
+
+        return jwtToken;
     }
     public String generateToken(String username, String role){
         Map<String, Object> claims = new HashMap<>();

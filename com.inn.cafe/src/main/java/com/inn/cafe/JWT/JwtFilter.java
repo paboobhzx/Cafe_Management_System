@@ -24,10 +24,19 @@ public class JwtFilter extends OncePerRequestFilter {
     Claims claims = null;
 
     private String userName = null;
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if(httpServletRequest.getServletPath().matches("user/login|/user/forgotPassword|/user/signup")){
+
+       // String test = httpServletRequest.getServletPath().;
+      //  if(httpServletRequest.getServletPath() == "user/login" || httpServletRequest.getServletPath() == "user/forgotPassword"
+      //  || httpServletRequest.getServletPath() == "/user/signup"){
+
+      //  }
+        if(httpServletRequest.getServletPath().matches("/user/login|/user/forgotPassword|/user/signup")){
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }
         else

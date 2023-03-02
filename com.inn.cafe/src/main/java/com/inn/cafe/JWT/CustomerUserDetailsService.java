@@ -22,15 +22,28 @@ public class CustomerUserDetailsService implements UserDetailsService {
     private User userDetail; //com.inn.cafe.model.User
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Inside loadUserByUserName {}", username);
+        log.info("Inside loadUserByUserName  CustomerUserDetailsService.java{}", username);
         userDetail = userDao.findByEmailId(username);
         if(!Objects.isNull(userDetail)){
+            String pass = userDetail.getPassword();
+            String usr = userDetail.getEmail();
             return new org.springframework.security.core.userdetails.User(userDetail.getEmail(),
-                    userDetail.getPassword(), new ArrayList<>());
+                    userDetail.getPassword(),
+                    true,
+                    true,
+                    true,
+                    true,
+                    new ArrayList<>());
         }
         else
             throw new UsernameNotFoundException("User not found");
     }
-    //com.inn.cafe.model.User
+
+    public User getUserDetail() {
+
+
+        return userDetail;
+    }
+
 
 }

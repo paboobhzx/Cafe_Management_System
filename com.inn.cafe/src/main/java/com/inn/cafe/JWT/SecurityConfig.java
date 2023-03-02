@@ -40,7 +40,8 @@ public class SecurityConfig    {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+        var encodedPwd = new BCryptPasswordEncoder();
+        return encodedPwd;
     }
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -77,9 +78,9 @@ public class SecurityConfig    {
 
 
 
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+      http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.authenticationProvider(authenticationProvider());
+      http.authenticationProvider(authenticationProvider());
 
 
         return http.build();
@@ -88,3 +89,4 @@ public class SecurityConfig    {
 
 
 }
+
