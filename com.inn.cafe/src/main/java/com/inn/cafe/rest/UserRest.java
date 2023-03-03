@@ -1,7 +1,6 @@
 package com.inn.cafe.rest;
 
 import com.inn.cafe.wrapper.UserWrapper;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +20,15 @@ public interface UserRest {
 
     @GetMapping(path = "/get")
     public ResponseEntity<List<UserWrapper>> getAllUsers();
+
+    @PostMapping(path = "/update")
+    public ResponseEntity<String> update(@RequestBody(required = true) Map<String,String> requestMap);
+
+    @GetMapping(path = "/checkToken")
+    public ResponseEntity<String> CheckToken();
+
+    @PostMapping(path = "/changePassword")
+    public ResponseEntity<String> changePassword(@RequestBody Map<String,String> requestMap);
 
 
 

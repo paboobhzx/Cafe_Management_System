@@ -8,6 +8,7 @@ import com.inn.cafe.dao.UserDao;
 import com.inn.cafe.model.User;
 import com.inn.cafe.service.UserService;
 import com.inn.cafe.utils.CafeUtils;
+import com.inn.cafe.utils.EmailUtils;
 import com.inn.cafe.wrapper.UserWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +20,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    EmailUtils emailUtils;
     @Autowired
     UserDao userDao;
     @Autowired
@@ -75,6 +75,10 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+    private String BEncryptPassword(String password){
+        String encryptedPass = new BCryptPasswordEncoder().encode(password);
+        return encryptedPass;
     }
 
     private User getUserFromMap(Map<String, String> requestMap){
@@ -132,7 +136,7 @@ public class UserServiceImpl implements UserService {
         {
             if(jwtFilter.isAdmin())
             {
-
+                return new ResponseEntity<>(userDao.getAllUser(), HttpStatus.OK);
             }
             else {
                 return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
@@ -143,5 +147,78 @@ public class UserServiceImpl implements UserService {
             ex.printStackTrace();
         }
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> update(Map<String, String> requestMap) {
+        try
+        {
+            if(jwtFilter.isAdmin()){
+                Optional<User> findUser = userDao.findById(Integer.parseInt(requestMap.get("id")));
+                if(!findUser.isEmpty()){
+                    userDao.updateStatus(requestMap.get("status"), Integer.parseInt(requestMap.get("id")));
+                    //sendMailToAllAdmin(requestMap.get("status"), findUser.get().getEmail(), userDao.getAllAdmin());
+                    return CafeUtils.getResponseEntity("User status updated successfully", HttpStatus.OK);
+
+                }
+                else {
+                    return CafeUtils.getResponseEntity("User ID doesn't exist", HttpStatus.OK);
+                }
+            } else {
+                return CafeUtils.getResponseEntity(CafeConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+            }
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return new ResponseEntity<>(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+
+    private void sendMailToAllAdmin(String status, String user, List<String> allAdmin) {
+        allAdmin.remove(jwtFilter.getCurrentUser());
+        String currUser = jwtFilter.getCurrentUser();
+        if(status != null && status.equalsIgnoreCase("true")){
+            emailUtils.sendSimpleMessage(currUser, "Account Approved by " + "\n" + "ADMIN: " + currUser, "The account was approved", allAdmin);
+        }
+        else {
+            emailUtils.sendSimpleMessage(currUser, "Account Disabled by " + "\n" + "ADMIN: " + currUser, "The account was disabled", allAdmin);
+
+        }
+    }
+    @Override
+    public ResponseEntity<String> checkToken() {
+        return CafeUtils.getResponseEntity("true", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        try
+        {
+            User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
+            if(!userObj.equals(null)){
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();var matchingPassword = encoder.matches(requestMap.get("oldPassword"), userObj.getPassword());
+
+                if(matchingPassword){
+                    String encryptedPass = encoder.encode(requestMap.get("newPassword"));
+                    userObj.setPassword(encryptedPass);
+                    userDao.save(userObj);
+                    return CafeUtils.getResponseEntity("Password Updated Successfully", HttpStatus.OK);
+
+                }
+                return CafeUtils.getResponseEntity("Incorrect old password", HttpStatus.BAD_REQUEST);
+
+            }
+            return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
