@@ -1,5 +1,6 @@
 package com.inn.cafe.serviceImpl;
 
+import com.google.common.base.Strings;
 import com.inn.cafe.JWT.CustomerUserDetailsService;
 import com.inn.cafe.JWT.JwtFilter;
 import com.inn.cafe.JWT.JwtUtil;
@@ -157,7 +158,7 @@ public class UserServiceImpl implements UserService {
                 Optional<User> findUser = userDao.findById(Integer.parseInt(requestMap.get("id")));
                 if(!findUser.isEmpty()){
                     userDao.updateStatus(requestMap.get("status"), Integer.parseInt(requestMap.get("id")));
-                    //sendMailToAllAdmin(requestMap.get("status"), findUser.get().getEmail(), userDao.getAllAdmin());
+                    sendMailToAllAdmin(requestMap.get("status"), findUser.get().getEmail(), userDao.getAllAdmin());
                     return CafeUtils.getResponseEntity("User status updated successfully", HttpStatus.OK);
 
                 }
@@ -198,22 +199,42 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
         try
         {
+
             User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
             if(!userObj.equals(null)){
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();var matchingPassword = encoder.matches(requestMap.get("oldPassword"), userObj.getPassword());
-
-                if(matchingPassword){
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                var matchingPassword = encoder.matches(requestMap.get("oldPassword"), userObj.getPassword());
+                if(matchingPassword) //password matches. decrypted from db and compared to the new one
+                {
+                    sendMailToAllAdmin(userObj.getStatus(), userObj.getEmail(), userDao.getAllAdmin());
                     String encryptedPass = encoder.encode(requestMap.get("newPassword"));
                     userObj.setPassword(encryptedPass);
                     userDao.save(userObj);
                     return CafeUtils.getResponseEntity("Password Updated Successfully", HttpStatus.OK);
-
                 }
+
                 return CafeUtils.getResponseEntity("Incorrect old password", HttpStatus.BAD_REQUEST);
 
             }
             return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+        try
+        {
+            User userObj = userDao.findByEmail(requestMap.get("email"));
+            if(!Objects.isNull(userObj) && !Strings.isNullOrEmpty(userObj.getEmail())){
+
+                return CafeUtils.getResponseEntity("Check your mail for Credentials", HttpStatus.OK);
+            }
         }
         catch(Exception ex)
         {
