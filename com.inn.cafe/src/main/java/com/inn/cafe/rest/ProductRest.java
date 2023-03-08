@@ -19,5 +19,5 @@ public interface ProductRest {
     ResponseEntity<List<ProductWrapper>> getAllProducts();
 
     @PostMapping(path = "/update")
-    ResponseEntity<String> updateProduct(@RequestBody(required = true) Map<String,String> requestMap)
+    ResponseEntity<String> updateProduct(@RequestBody(required = true) Map<String,String> requestMap);
 }
