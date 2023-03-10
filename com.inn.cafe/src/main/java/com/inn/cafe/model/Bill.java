@@ -12,6 +12,10 @@ import java.io.Serializable;
 @Table(name = "Bill")
 @Data //LOMBOK
 
+
+//@NamedQuery(name = "BIll.getBillByUserName", query = "select b from Bill b where b.createdBy=:username order by b.id desc")
+//@NamedQuery(name = "Product.getProductById", query = "select new com.inn.cafe.wrapper.ProductWrapper(p.id, p.name, p.description, p.price) from Product p where p.id =: id")
+
 public class Bill implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -11,14 +11,21 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 
@@ -78,15 +85,14 @@ public class BillServiceImpl implements BillService {
             document.close();
             return new ResponseEntity<>("{\"uuid\":\"" + fileName + "\"}", HttpStatus.OK);
 
-
-            return CafeUtils.getResponseEntity("Required data not found", HttpStatus.BAD_REQUEST);
-
         }
         catch(Exception ex){
             ex.printStackTrace();
         }
         return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 
     private void addRows(PdfPTable table, Map<String, Object> data) {
         log.info("Inside addRows");
@@ -135,7 +141,7 @@ public class BillServiceImpl implements BillService {
         rect.enableBorderSide(2);
         rect.enableBorderSide(4);
         rect.enableBorderSide(8);
-        rect.setBorderColor(BaseColor.BLACK);;
+        rect.setBorderColor(BaseColor.BLACK);
         rect.setBorderWidth(1);
         document.add(rect);
     }
@@ -168,4 +174,77 @@ public class BillServiceImpl implements BillService {
             ex.printStackTrace();
         }
     }
+    @Override
+    public ResponseEntity<List<Bill>> getBills() {
+        List<Bill> listObj = new ArrayList<>();
+        if(jwtFilter.isAdmin()){
+            listObj = billDao.getAllBills();
+        }else{
+            listObj = billDao.getBillByUserName(jwtFilter.getCurrentUser());
+        }
+        return new ResponseEntity<>(listObj, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) {
+        log.info("Inside getPdf");
+        try
+        {
+            byte[] byteArray = new byte[0];
+            if(!requestMap.containsKey("uuid") && validateRequestMap(requestMap)){
+                return new ResponseEntity<>(byteArray, HttpStatus.BAD_REQUEST);
+            }
+
+            String filePath = CafeConstants.STORE_LOCATION + "\\"+
+                    (String)requestMap.get("uuid")+ ".pdf";
+
+            if(CafeUtils.fileExists(filePath)){
+                byteArray = getByteArray(filePath);
+                return new ResponseEntity<>(byteArray, HttpStatus.OK);
+            }
+            else {
+                requestMap.put("isGenerated", false);
+                generateReport(requestMap);
+                byteArray = getByteArray(filePath);
+                return new ResponseEntity<>(byteArray, HttpStatus.OK);
+
+            }
+
+
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+
+    private byte[] getByteArray(String filePath) throws Exception{
+        File initialFile = new File(filePath);
+        InputStream targetStream = new FileInputStream(initialFile);
+        byte[] byteArray = IOUtils.toByteArray(targetStream);
+        targetStream.close();
+        return byteArray;
+    }
+
+    @Override
+    public ResponseEntity<String> deleteBill(Integer id) {
+        try
+        {
+            Optional optionalObj = billDao.findById(id);
+            if(!optionalObj.isEmpty()){
+                billDao.deleteById(id);
+                return CafeUtils.getResponseEntity("Bill deleted", HttpStatus.OK);
+            }else {
+                return CafeUtils.getResponseEntity("BIll id doesn't exists", HttpStatus.OK);
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
