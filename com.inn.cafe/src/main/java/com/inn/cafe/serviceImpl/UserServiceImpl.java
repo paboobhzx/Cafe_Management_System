@@ -203,6 +203,7 @@ public class UserServiceImpl implements UserService {
             User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
             if(!userObj.equals(null)){
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
                 var matchingPassword = encoder.matches(requestMap.get("oldPassword"), userObj.getPassword());
                 if(matchingPassword) //password matches. decrypted from db and compared to the new one
                 {

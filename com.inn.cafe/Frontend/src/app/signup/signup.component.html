@@ -23,7 +23,7 @@
 
             <mat-form-field appearance="standard" fxFlex>
                 <mat-label>Contact Number</mat-label>
-                <input matInput formControlName="name" required>
+                <input matInput formControlName="contactNumber" required>
                 <mat-error *ngIf="signupForm.controls.contactNumber.touched && signupForm.controls.contactNumber.invalid">
                     <span *ngIf="signupForm.controls.contactNumber.errors.required">This field is mandatory</span>
                     <span *ngIf="signupForm.controls.contactNumber.errors.pattern">This field is invalid</span>
@@ -40,34 +40,37 @@
                 </mat-error>
 
             </mat-form-field>
-
-            <mat-form-field appearance="standard" fxFlex>
-                <mat-label>Password</mat-label>
+            <mat-form-field>
                 <input matInput placeholder="password" [type]="password ? 'password' : 'text'" formControlName="password" required>
                 <mat-icon matSuffix (click)="password = !password">{{password ? 'visibility_off' : 'visibility'}}</mat-icon>
+                               
+                <mat-hint *ngIf="!signupForm.controls.password.value">Enter your password</mat-hint>
                 
-                <mat-error *ngIf="signupForm.controls.password.touched && signupForm.controls.password.invalid">
-                    
-                    <span *ngIf="signupForm.controls.password.errors.required">This field is mandatory</span>
-                    
-                </mat-error>
 
             </mat-form-field>
 
-            <mat-form-field appearance="standard" fxFlex>
-                <mat-label>Confirm Password</mat-label>
-                <input matInput placeholder="confirmPassword" [type]="password ? 'confirmPassword' : 'text'" formControlName="confirmPassword" required>
+            <mat-form-field>
+                <input matInput placeholder="password" [type]="password ? 'confirmPassword' : 'text'" formControlName="confirmPassword" required>
                 <mat-icon matSuffix (click)="confirmPassword = !confirmPassword">{{confirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                 
-                <mat-error *ngIf="signupForm.controls.confirmPassword.touched && signupForm.controls.confirmPassword.invalid">
-                    
-                    <span *ngIf="signupForm.controls.confirmPassword.errors.required">This field is mandatory</span>                    
-                </mat-error>
-                <mat-hint *ngIf="validateSubmit() && !(signupForm.controls.confirmPassword.invalid)">
-                    <span>New Password & Confirm Password does not match</span>
+                <mat-hint *ngIf="!signupForm.controls.confirmPassword.value">Confirm your password</mat-hint>
+                <mat-hint *ngIf="validateSubmit() && (signupForm.controls.confirmPassword.invalid)">
+                    <span>New password & confirm password does not match</span>
                 </mat-hint>
+                
 
             </mat-form-field>
+
+            
 
         </div>
     </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+<button mat-raised-button color="primary" type="submit" (click)="handleSubmit()" [disabled]="validateSubmit()">
+<mat-icon>save</mat-icon> Signup
+</button>
+<button mat-raised-button color="warn" mat-dialog-close><mat-icon>cancel</mat-icon><mat-icon>Close</mat-icon></button>
+
+</mat-dialog-actions>
