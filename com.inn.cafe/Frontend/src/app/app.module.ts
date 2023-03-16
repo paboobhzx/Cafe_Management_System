@@ -17,6 +17,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
+import { TokenInterceptorInterceptor } from './services/token-interceptor.interceptor';
 
 
 
@@ -44,7 +45,7 @@ import { LoginComponent } from './login/login.component';
     SharedModule,
     HttpClientModule
   ],
-  providers: [ ],
+  providers: [HttpClientModule, {provide:HTTP_INTERCEPTORS, useClass:TokenInterceptorInterceptor, multi: true}],
   bootstrap: [AppComponent],
   
 })

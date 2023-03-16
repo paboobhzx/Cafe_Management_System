@@ -2,6 +2,8 @@ export class GlobalConstants {
     //Message
     public static genericError: string = "Something went wrong. Please try again later"
 
+    public static unauthorizedMessage : string = "You're not authorized to access this resource";
+
     //regex
     public static nameRegex: string = "Name [a-zA-Z0-9 ]*";
     public static emailRegex: string = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"  ;

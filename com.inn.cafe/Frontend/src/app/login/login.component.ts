@@ -6,6 +6,7 @@ import { SnackbarService } from '../services/snackbar.service';
 import { UserService } from '../services/user.service';
 import { GlobalConstants } from '../shared/global-constants';
 
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -30,9 +31,11 @@ export class LoginComponent implements OnInit {
 
     })
   }
+
   public togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
+
   handleSubmit(){
     var formData = this.loginForm.value;
     var data = {
