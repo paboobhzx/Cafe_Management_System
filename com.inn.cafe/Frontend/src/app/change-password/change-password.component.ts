@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { MatDialogRef } from '@angular/material/dialog';
 import { SnackbarService } from '../services/snackbar.service';
+import { GlobalConstants } from '../shared/global-constants';
 
 @Component({
   selector: 'change-password',
@@ -38,6 +39,28 @@ export class ChangePasswordComponent {
     else{
       return false;
     }
+
+  }
+  handlePasswordChangeSubmit(){
+    var formData = this.changePasswordForm.value;
+    var data = {
+      oldPassword: formData.oldPassword,
+      newPassword: formData.newPassword,
+      confirmPassword: formData.confirmPassword
+    }
+
+    this.userService.changePassword(data).subscribe((response:any) => {
+      this.responseMessage = response?.message;
+      this.dialogRef.close();
+      this.snackBarService.openSnackBar(this.responseMessage,"success");
+    }, (error) => {
+      console.log(error);
+      if(error.error?.message){
+        this.responseMessage = error.error?.message;
+      } else{
+        this.snackBarService.openSnackBar(this.responseMessage, GlobalConstants.error);
+      }
+    })
 
   }
 }
