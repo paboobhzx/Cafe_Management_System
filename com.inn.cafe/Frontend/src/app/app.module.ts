@@ -18,6 +18,8 @@ import { SignupComponent } from './signup/signup.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
 import { TokenInterceptorInterceptor } from './services/token-interceptor.interceptor';
+import { ConfirmationComponent } from './material-component/confirmation/confirmation.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 
 
@@ -31,7 +33,9 @@ import { TokenInterceptorInterceptor } from './services/token-interceptor.interc
     AppSidebarComponent,
     SignupComponent,
     ForgotPasswordComponent,
-    LoginComponent
+    LoginComponent,
+    ConfirmationComponent,
+    ChangePasswordComponent
    ],
 
   imports: [

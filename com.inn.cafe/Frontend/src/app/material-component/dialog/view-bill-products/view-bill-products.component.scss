@@ -2,7 +2,7 @@
     margin: -24px;
     margin-bottom: 0;
     width: auto;
-    margin-bottom: 10PX;
+    //margin-bottom: 10PX;
   }
   
     mat-form-field{
@@ -39,4 +39,9 @@
         text-align: left;
         background-color: #04AA6D;
         color: white;
+      }
+      .mat-h6, .mat-headline, .mat-typography h6{
+        font-size:  18px;
+        font-weight: 400;
+
       }
