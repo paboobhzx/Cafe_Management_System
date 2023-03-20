@@ -29,15 +29,17 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.productForm = this.formBuilder.group({
-      name: ["", [Validators.required, Validators.pattern(GlobalConstants.nameRegex)]],
+      name: ["", [Validators.required]],
       categoryId: ["", [Validators.required]],
       price: ["", [Validators.required]],
       description: ["", Validators.required]
     });
-    if (this.dialogAction.action === "Edit") {
+    console.log("Inside ngOnInit product.component.ts\n" + this.dialogData.action )
+    if (this.dialogData.action === "Edit") {
       this.dialogAction = "Edit"
-      this.action = "Update;"
-      this.productForm.patchValue(this.dialogData);
+      this.action = "Update"      
+      this.productForm.patchValue(this.dialogData.data);
+      console.log("DialogData.data after patchValue:\n " + this.dialogData.data)
     }
     this.getCategories();
 
@@ -56,8 +58,9 @@ export class ProductComponent implements OnInit {
     })
   }
 
-  handleSubmit() {
-    if (this.dialogAction === "Edit") {
+  handleSubmit() {    
+    console.log("this.dialogActio.action value " + this.dialogAction.action)
+    if (this.dialogAction.action === "Edit") {
       this.edit();
     }
     else {
@@ -74,6 +77,7 @@ export class ProductComponent implements OnInit {
       description: formData.description
     }
     this.productService.add(data).subscribe((response: any) => {
+      //console.log("Form data: " + "\n" + formData);
       this.dialogRef.close();
       this.onAddProduct.emit();
       this.responseMessage = response.message;
