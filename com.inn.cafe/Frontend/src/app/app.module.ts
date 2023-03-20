@@ -20,6 +20,14 @@ import { LoginComponent } from './login/login.component';
 import { TokenInterceptorInterceptor } from './services/token-interceptor.interceptor';
 import { ConfirmationComponent } from './material-component/confirmation/confirmation.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
+import { ManageCategoryComponent } from './material-component/manage-category/manage-category.component';
+import { CategoryComponent } from './category/category.component';
+import { ManageProductComponent } from './material-component/manage-product/manage-product.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { ProductComponent } from './material-component/dialog/product/product.component';
 
 
 
@@ -35,7 +43,11 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     ForgotPasswordComponent,
     LoginComponent,
     ConfirmationComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ManageCategoryComponent,
+    CategoryComponent,
+    ManageProductComponent,
+    ProductComponent
    ],
 
   imports: [
@@ -47,7 +59,11 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     MaterialModule,
     FlexLayoutModule,
     SharedModule,
-    HttpClientModule
+    HttpClientModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatInputModule
   ],
   providers: [HttpClientModule, {provide:HTTP_INTERCEPTORS, useClass:TokenInterceptorInterceptor, multi: true}],
   bootstrap: [AppComponent],
