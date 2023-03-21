@@ -15,7 +15,7 @@ export class ConfirmationComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA)public dialogData:any) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     if(this.dialogData && this.dialogData.confirmation){
       this.details = this.dialogData;
     }

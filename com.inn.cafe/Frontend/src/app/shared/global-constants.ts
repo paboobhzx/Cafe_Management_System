@@ -1,5 +1,7 @@
 export class GlobalConstants {
     //Message
+    public static productExistError:string = "Product already exists";
+    public static productAdded:string = "Product added successfully";
     public static genericError: string = "Something went wrong. Please try again later"
 
     public static unauthorizedMessage : string = "You're not authorized to access this resource";

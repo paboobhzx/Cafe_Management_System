@@ -78,6 +78,7 @@ export class ManageCategoryComponent implements OnInit {
       this.tableData();
     })  
   }
+  
 
   }
 

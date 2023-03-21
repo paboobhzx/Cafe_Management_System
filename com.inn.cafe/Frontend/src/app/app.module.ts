@@ -28,6 +28,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { ProductComponent } from './material-component/dialog/product/product.component';
+import { ManageOrderComponent } from './material-component/manage-order/manage-order.component';
 
 
 
@@ -47,7 +48,8 @@ import { ProductComponent } from './material-component/dialog/product/product.co
     ManageCategoryComponent,
     CategoryComponent,
     ManageProductComponent,
-    ProductComponent
+    ProductComponent,
+    ManageOrderComponent
    ],
 
   imports: [

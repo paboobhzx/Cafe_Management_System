@@ -89,21 +89,19 @@ export class ManageProductComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
 
     dialogConfig.data = {
-      width: '330px',
-      height: '400px',      
+     
       action: 'Delete',
-      message: 'delete ' + values.name + 'product',
+      message: 'delete ' + values.name,
       confirmation: true
     }
-    console.log("Inside handleDeleteAction: " + dialogConfig.data.message)
     const dialogRef = this.dialog.open(ConfirmationComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(result => {
-      
-    });
     const sub = dialogRef.componentInstance.onEmitStatusChange.subscribe((response) => {
+      this.deleteProduct(values.id);
+      dialogRef.close();
+
     })
-    this.deleteProduct(values.id);
-    dialogRef.close();
+    
+   
 
 
   }

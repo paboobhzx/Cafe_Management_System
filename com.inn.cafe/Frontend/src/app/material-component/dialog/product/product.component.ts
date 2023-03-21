@@ -42,6 +42,7 @@ export class ProductComponent implements OnInit {
       console.log("DialogData.data after patchValue:\n " + this.dialogData.data)
     }
     this.getCategories();
+    console.log("Did i called getcategories");
 
   }
   getCategories() {
@@ -59,8 +60,8 @@ export class ProductComponent implements OnInit {
   }
 
   handleSubmit() {    
-    console.log("this.dialogActio.action value " + this.dialogAction.action)
-    if (this.dialogAction.action === "Edit") {
+    console.log("handleSubmit" + this.dialogAction)
+    if (this.dialogAction === "Edit") {
       this.edit();
     }
     else {
