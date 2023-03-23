@@ -43,7 +43,8 @@ public class BillServiceImpl implements BillService {
         try
         {
             String fileName = "";
-            if(validateRequestMap(requestMap)){
+            Boolean validData = validateRequestMap(requestMap);
+            if(validData){
                 if(requestMap.containsKey("isGenerate") && !(Boolean)requestMap.get("isGenerate")){
                     fileName = (String) requestMap.get("uuid");
                 } else {
@@ -51,7 +52,10 @@ public class BillServiceImpl implements BillService {
                     requestMap.put("uuid", fileName);
                     insertBill(requestMap);
                 }
+
             }
+
+
             String data = "Name: " + requestMap.get("name") + "\n" +
                     "Contact Number: " + requestMap.get("contactNumber") +
                     "\n" + "E-mail: " + requestMap.get("email") +
@@ -74,7 +78,7 @@ public class BillServiceImpl implements BillService {
             addTableHeader(table);
 
             JSONArray jsonArray =
-                    CafeUtils.getJsonArrayFromString((String)requestMap.get("productDetails"));
+                    CafeUtils.getJsonArrayFromString((String)requestMap.get("ProductDetails"));
             for(int i=0; i < jsonArray.length(); i++){
                 addRows(table, CafeUtils.getMapFromJson(jsonArray.getString(i)));
             }
@@ -152,7 +156,7 @@ public class BillServiceImpl implements BillService {
                 requestMap.containsKey("contactNumber") &&
                 requestMap.containsKey("email") &&
                 requestMap.containsKey("paymentMethod") &&
-                requestMap.containsKey("productDetails") &&
+                requestMap.containsKey("ProductDetails") &&
                 requestMap.containsKey("totalAmount");
     }
     private void insertBill(Map<String, Object> requestMap) {
@@ -165,7 +169,7 @@ public class BillServiceImpl implements BillService {
             billObj.setContactNumber((String)requestMap.get("contactNumber"));
             billObj.setPaymentMethod((String)requestMap.get("paymentMethod"));
             billObj.setTotal(Integer.parseInt((String)requestMap.get("totalAmount")));
-            billObj.setProductDetail((String)requestMap.get("productDetails"));
+            billObj.setProductDetail((String)requestMap.get("ProductDetails"));
             billObj.setCreatedBy(jwtFilter.getCurrentUser());
             billDao.save(billObj);
 

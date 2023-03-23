@@ -28,6 +28,12 @@ export class BillService {
     return this.httpClient.get(this.url + "/bill/getBills");
   }
 
+  delete(id: any){
+    return this.httpClient.post(this.url + "/bill/delete/" + id, {
+      headers: new HttpHeaders().set('Content-Type',"application/json")
+    });
+  }
+
 
 }
 

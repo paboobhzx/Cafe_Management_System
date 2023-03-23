@@ -29,6 +29,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { ProductComponent } from './material-component/dialog/product/product.component';
 import { ManageOrderComponent } from './material-component/manage-order/manage-order.component';
+import { ViewBillComponent } from './material-component/view-bill/view-bill.component';
+import { ManageUserComponent } from './material-component/manage-user/manage-user.component';
 
 
 
@@ -49,7 +51,9 @@ import { ManageOrderComponent } from './material-component/manage-order/manage-o
     CategoryComponent,
     ManageProductComponent,
     ProductComponent,
-    ManageOrderComponent
+    ManageOrderComponent,
+    ViewBillComponent,
+    ManageUserComponent
    ],
 
   imports: [
